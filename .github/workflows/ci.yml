@@ -69,10 +69,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Disable annotations for python 2.7 
-        if: matrix.python-version == '2.7'
-        run: |
-          echo "::remove-matcher owner=python::"
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -104,6 +100,10 @@ jobs:
         with:
           name: coverage
           path: .coverage_${{ matrix.python-version }}
+      - name: Disable annotations for python 2.7 
+        if: matrix.python-version == '2.7'
+        run: |
+          echo "::remove-matcher owner=python::"
   test-gui:
     needs: test-python
     if: always() && (github.event_name == 'schedule' && github.ref == 'refs/heads/master') || ((needs.check_source.outputs.gui-changed == 'true' || contains(github.event.head_commit.message,'force-test')) && (needs.test-python.result == 'success' || needs.test-python.result == 'skipped'))
@@ -142,10 +142,6 @@ jobs:
           ref: ${{ steps.split.outputs._1 }}
           path: './enigma2'
           fetch-depth: 0
-      - name: Disable annotations for python 2.7 
-        if: matrix.python-version == '2.7'
-        run: |
-          echo "::remove-matcher owner=python::"
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -210,6 +206,10 @@ jobs:
         with:
           name: coverage
           path: .coverage_${{ steps.split.outputs._0 }}_${{ steps.split.outputs._1 }}
+      - name: Disable annotations for python 2.7 
+        if: matrix.python-version == '2.7'
+        run: |
+          echo "::remove-matcher owner=python::"
   sonarcloud:
     needs: [test-python, test-gui]
     if: always() && needs.test-python.result == 'success' && (needs.test-gui.result == 'success' || needs.test-gui.result == 'skipped')
@@ -288,10 +288,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Disable annotations for python 2.7 
-        if: matrix.python-version == '2.7'
-        run: |
-          echo "::remove-matcher owner=python::"
       - name: Set up Python 2.7
         uses: actions/setup-python@v4
         with:
@@ -363,3 +359,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           localDir: 'ipk'
           remoteDir: ${{ secrets.FTP_DIR }}
+      - name: Disable annotations for python 2.7 
+        run: |
+          echo "::remove-matcher owner=python::"
